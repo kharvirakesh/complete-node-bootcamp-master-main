@@ -27,22 +27,26 @@ const data = fs.readFileSync(`${__dirname}/starter/dev-data/data.json`, 'utf-8')
 const dataObj = JSON.parse(data);
 
 const server = http.createServer((req, res) => {
-    const pathName = req.url;
+    const { pathname, query } = url.parse(req.url, true);
 
     // overview page
-    if (pathName === '/' || pathName === '/overview') {
+    if (pathname === '/' || pathname === '/overview') {
         res.writeHead(200, { 'Content-type': 'text/html' });
-        const cardsHtml = dataObj.map(el => replaceTemplate(tempCard, el));
-        res.end(tempOverview);
+        const cardsHtml = dataObj.map(el => replaceTemplate(tempCard, el)).join('');
+        const output = tempOverview.replace('{%PRODUCT_CARDS%}', cardsHtml);
+        res.end(output);
     }
     // api page
-    else if (pathName === '/api') {
+    else if (pathname === '/api') {
         res.writeHead(200, { 'Content-type': 'application/json' });
         res.end(data);
     }
     // product page
-    else if (pathName === '/product') {
-        res.end('product page');
+    else if (pathname === '/product') {
+        res.writeHead(200, { 'Content-type': 'text/html' });
+        const product = dataObj[query.id];
+        const output = replaceTemplate(tempProduct, product);
+        res.end(output);
     }
     // not found!
     else {
