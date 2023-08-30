@@ -1,0 +1,17 @@
+{
+  "name": "1-node-farm",
+  "version": "1.0.0",
+  "description": "learnig node-js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "Rakesh Kharvi",
+  "license": "ISC",
+  "dependencies": {
+    "global": "^4.4.0",
+    "nodemon": "^3.0.1",
+    "slugify": "^1.6.6"
+  }
+}
