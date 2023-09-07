@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const morgan = require('morgan');
 
+// MIDDLEWARES
 const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
@@ -20,6 +21,7 @@ const tours = JSON.parse(
   fs.readFileSync(`../starter/dev-data/data/tours-simple.json`),
 );
 
+// ROUTE HANDLERS
 const getTours = (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -97,16 +99,17 @@ const deleteTour = (req, res) => {
   });
 };
 
-// Route handlers
 // app.get('/api/v1/tours', getTours);
 // app.get('/api/v1/tours:id', getTourById);
 // app.post('/api/v1/tours', createTour);
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id', deleteTour);
 
+// ROUTES 
 app.route('/api/v1/tours').get(getTours).post(createTour);
 app
   .route('/api/v1/tours/:id')
+  .get(getTourById)
   .post(createTour)
   .patch(updateTour)
   .delete(deleteTour);
@@ -128,6 +131,7 @@ app.get('/', (req, res) => {
   });
 });
 
+// START SERVER
 const port = 3000;
 app.listen(port, () => {
   console.log(`listening at port: ${port}`);
