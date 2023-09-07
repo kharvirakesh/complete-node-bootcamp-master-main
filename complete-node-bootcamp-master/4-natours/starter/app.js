@@ -8,7 +8,7 @@ const tours = JSON.parse(
   fs.readFileSync(`../starter/dev-data/data/tours-simple.json`),
 );
 
-app.get('/api/v1/tours', (req, res) => {
+const getTours = (req, res) => {
   res.status(200).json({
     status: 'success',
     results: tours.length,
@@ -16,9 +16,26 @@ app.get('/api/v1/tours', (req, res) => {
       tours,
     },
   });
-});
+};
 
-app.post('/api/v1/tours', (req, res) => {
+const getTourById = (req, res) => {
+  if (req.params.id * 1 > tours.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid id',
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tours,
+    },
+  });
+};
+
+const createTour = (req, res) => {
   console.log(req.body);
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
@@ -36,9 +53,9 @@ app.post('/api/v1/tours', (req, res) => {
       });
     },
   );
-});
+};
 
-app.patch('/api/v1/tours/:id', (req, res) => {
+const updateTour = (req, res) => {
   if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
       status: 'fail',
@@ -52,9 +69,9 @@ app.patch('/api/v1/tours/:id', (req, res) => {
       tours: '<Updated tour here...>',
     },
   });
-});
+};
 
-app.delete('/api/v1/tours/:id', (req, res) => {
+const deleteTour = (req, res) => {
   if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
       status: 'fail',
@@ -65,7 +82,21 @@ app.delete('/api/v1/tours/:id', (req, res) => {
     status: 'success',
     message: 'null',
   });
-});
+};
+
+// Route handlers
+// app.get('/api/v1/tours', getTours);
+// app.get('/api/v1/tours:id', getTourById);
+// app.post('/api/v1/tours', createTour);
+// app.patch('/api/v1/tours/:id', updateTour);
+// app.delete('/api/v1/tours/:id', deleteTour);
+
+app.route('/api/v1/tours').get(getTours).post(createTour);
+app
+  .route('/api/v1/tours/:id')
+  .post(createTour)
+  .patch(updateTour)
+  .delete(deleteTour);
 
 app.get('/api/v1/tour', (req, res) => {
   res.status(200).json({
