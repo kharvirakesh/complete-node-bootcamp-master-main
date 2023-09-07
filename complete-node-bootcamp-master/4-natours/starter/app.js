@@ -141,21 +141,16 @@ const deleteUser = (req, res) => {
 // app.delete('/api/v1/tours/:id', deleteTour);
 
 // ROUTES
-app.route('/api/v1/tours').get(getTours).post(createTour);
-app
-  .route('/api/v1/tours/:id')
-  .get(getTourById)
-  .patch(updateTour)
-  .delete(deleteTour);
+const tourRouter = express.Router();
+const userRouter = express.Router();
 
-app.route('/api/v1/users').get(getUsers).post(createUser);
-app
-  .route('/api/v1/users/:id')
-  .get(getUsersbyId)
-  .patch(updateUser)
-  .delete(deleteUser);
+tourRouter.route('/').get(getTours).post(createTour);
+tourRouter.route('/:id').get(getTourById).patch(updateTour).delete(deleteTour);
 
-app.get('/api/v1/tour', (req, res) => {
+userRouter.route('/').get(getUsers).post(createUser);
+userRouter.route('/:id').get(getUsersbyId).patch(updateUser).delete(deleteUser);
+
+tourRouter.get('/', (req, res) => {
   res.status(200).json({
     status: 'success',
     results: tours.length,
@@ -164,6 +159,9 @@ app.get('/api/v1/tour', (req, res) => {
     },
   });
 });
+
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
 app.get('/', (req, res) => {
   res.status(200).json({
